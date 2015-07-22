@@ -36,12 +36,31 @@ TaskSchema.methods.getChildren = function() {
 
 TaskSchema.methods.getSiblings = function() {
 	//return this.constructor.find({parent: this.parent}).where('_id').ne(this.id).exec();
+	
 	return this.constructor.find({
 		_id: {
 			$ne: this._id
 		},
 		parent: this.parent
 	});
+
+/*	self = this;
+	return this.constructor.find({
+		parent: this.parent
+	}).exec().then(function(tasks){
+		return _.reject(tasks, {_id: self._id})
+	});*/
+
+/*	self = this;
+	return this.constructor.find({
+		parent: this.parent
+	}).exec().then(function(tasks){
+		return tasks.filter(function(t){
+			return t._id !== self._id;
+		})
+	});*/
+
+
 }
 
 Task = mongoose.model('Task', TaskSchema);
