@@ -26,18 +26,22 @@ TaskSchema.virtual('overdue').get(function() {
 //methods
 
 TaskSchema.methods.addChild = function(params) {
- 	return Task.create({
- 		parent: this._id,
- 		name: params.name
- 	});
+	params.parent = this._id;
+ 	return this.constructor.create(params);
  }
 
 TaskSchema.methods.getChildren = function() {
-	return Task.find({parent: this._id});
+	return this.constructor.find({parent: this._id}).exec();
 }
 
 TaskSchema.methods.getSiblings = function() {
-	return Task.find({parent: this.parent}).where('_id').ne(this.id);
+	//return this.constructor.find({parent: this.parent}).where('_id').ne(this.id).exec();
+	return this.constructor.find({
+		_id: {
+			$ne: this._id
+		},
+		parent: this.parent
+	});
 }
 
 Task = mongoose.model('Task', TaskSchema);
