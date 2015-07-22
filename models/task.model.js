@@ -15,15 +15,12 @@ var TaskSchema = new Schema({
 //virtuals
 
 TaskSchema.virtual('timeRemaining').get(function() {
-	if(!this.due){
-		return Infinity;
-	}else{
-		return this.due - new Date();
-	}
+	if(!this.due) return Infinity;
+	else return this.due - new Date();
 })
 
 TaskSchema.virtual('overdue').get(function() {
-	return new Date() - this.due;
+	return this.timeRemaining < 0 && !this.complete;
 })
 
 //methods
